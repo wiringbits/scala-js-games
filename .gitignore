@@ -24,3 +24,7 @@ dist-ssr
 *.sw?
 .bsp/
 target/
+.bloop/
+.metals/
+project/project/
+project/metals.sbt
