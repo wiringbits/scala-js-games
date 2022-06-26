@@ -14,10 +14,10 @@ def ScalajsGames(): Unit = {
   val asteroids = new GameHolder("asteroids", Asteroids.apply)
 //  val astrolander = new GameHolder("astrolander", AstroLander.apply)
   val snake = new GameHolder("snake", Snake.apply)
-//  val pong = new GameHolder("pong", Pong)
+  val pong = new GameHolder("pong", Pong.apply)
 //  val bricks = new GameHolder("bricks", BrickBreaker)
 //  val tetris = new GameHolder("tetris", Tetris)
 //  val games = Seq(asteroids, astrolander, snake, pong, bricks, tetris)
-  val gameList = Seq(asteroids, snake)
+  val gameList = Seq(asteroids, snake, pong)
   dom.window.setInterval(() => gameList.foreach(_.update()), 15)
 }
