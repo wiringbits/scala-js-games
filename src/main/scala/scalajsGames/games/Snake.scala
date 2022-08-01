@@ -12,6 +12,7 @@ case object Empty extends Spot
 case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
   var frameCount = 0
   var length = 10
+  var score = 0
   var direction = Point(1, 0)
   var position = Point(40, 30)
   val grid = {
@@ -60,6 +61,8 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
       }
 
     }
+    ctx.font = "12pt Arial"
+    ctx.fillText(s"Score ${score}", 50, 30)
   }
   def update(keys: Set[Int]) = {
     frameCount += 1
@@ -83,7 +86,9 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
           resetGame()
         case x =>
           x match {
-            case Apple(_, s) => length += s
+            case Apple(_, s) =>
+              score += s / 2
+              length += s
             case _ =>
           }
           grid(position.x.toInt)(position.y.toInt) = Wall(length)
