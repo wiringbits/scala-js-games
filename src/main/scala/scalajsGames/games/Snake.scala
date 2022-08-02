@@ -19,9 +19,9 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
     val spots: Array[Array[Spot]] = Array.fill(80)(Array.fill(60)(Empty))
     for (i <- 0 until 80) {
       spots(i)(0) = Wall(Int.MaxValue)
-      spots(i)(59) = Wall(Int.MaxValue)
+      spots(i)(56) = Wall(Int.MaxValue)
     }
-    for (i <- 0 until 60) {
+    for (i <- 0 until 57) {
       spots(0)(i) = Wall(Int.MaxValue)
       spots(79)(i) = Wall(Int.MaxValue)
     }
@@ -49,20 +49,20 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
       grid(i)(j) match {
         case Wall(_) =>
           ctx.fillStyle = "rgb(200, 200, 200)"
-          ctx.fillRect(i * 10, j * 10, 10, 10)
+          ctx.fillRect(i * 10, j * 10 + 30, 10, 10)
         case Apple(_, x) =>
           ctx.fillStyle = x match {
             case 2 => "rgb(255, 0, 0)"
             case 5 => "rgb(255, 255, 0)"
           }
-          ctx.fillCircle(i * 10 + 5, j * 10 + 5, 5)
+          ctx.fillCircle(i * 10 + 5, j * 10 + 35, 5)
 
         case Empty =>
       }
 
     }
-    ctx.font = "12pt Arial"
-    ctx.fillText(s"Score: ${score}", 50, 30)
+    ctx.font = "14pt Arial"
+    ctx.fillText(s"Score: ${score}", 40, 20)
   }
   def update(keys: Set[Int]) = {
     frameCount += 1
@@ -70,7 +70,7 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
     if (frameCount % 2 == 0) {
 
       if (math.random > 0.9 + appleCount / 10.0) {
-        val (x, y) = (Random.nextInt(80), Random.nextInt(60))
+        val (x, y) = (Random.nextInt(80), Random.nextInt(56))
         grid(x)(y) match {
           case Empty =>
             val score = if (Random.nextInt(20) == 0) 5 else 2
