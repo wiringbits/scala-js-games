@@ -62,7 +62,7 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
 
     }
     ctx.font = "14pt Arial"
-    ctx.fillText(s"Score: ${score}", 40, 20)
+    ctx.fillText(s"Score: ${score}", 50, 20)
   }
   def update(keys: Set[Int]) = {
     frameCount += 1
