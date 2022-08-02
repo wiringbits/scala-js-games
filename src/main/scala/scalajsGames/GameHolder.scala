@@ -45,14 +45,23 @@ class GameHolder(canvasName: String, gameMaker: (Point, () => Unit) => Game) {
       ctx.font = "20pt Arial"
       ctx.textAlign = "center"
       ctx.fillText(message.get, bounds.x / 2, bounds.y / 2)
-      ctx.font = "14pt Arial"
-      ctx.fillText("Press any key to continue", bounds.x / 2, bounds.y / 2 + 30)
+      if (finalScore.isDefined) {
+        ctx.font = "16pt Arial"
+        ctx.fillText(s"Score: ${finalScore.get}", bounds.x / 2, bounds.y / 2 + 30)
+        ctx.font = "14pt Arial"
+        ctx.fillText("Press any key to continue", bounds.x / 2, bounds.y / 2 + 60)
+      } else {
+        ctx.font = "14pt Arial"
+        ctx.fillText("Press any key to continue", bounds.x / 2, bounds.y / 2 + 30)
+      }
     }
   }
 
   var message: Option[String] = None
+  var finalScore: Option[Int] = None
   def resetGame(): Unit = {
     message = game.result
+    finalScore = game.finalScore
     println("MESSAGE " + message)
     game = gameMaker(bounds, () => resetGame())
   }
