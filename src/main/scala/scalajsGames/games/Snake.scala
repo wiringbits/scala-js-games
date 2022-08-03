@@ -12,15 +12,16 @@ case object Empty extends Spot
 case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
   var frameCount = 0
   var length = 10
+  var score = 0
   var direction = Point(1, 0)
   var position = Point(40, 30)
   val grid = {
     val spots: Array[Array[Spot]] = Array.fill(80)(Array.fill(60)(Empty))
     for (i <- 0 until 80) {
       spots(i)(0) = Wall(Int.MaxValue)
-      spots(i)(59) = Wall(Int.MaxValue)
+      spots(i)(56) = Wall(Int.MaxValue)
     }
-    for (i <- 0 until 60) {
+    for (i <- 0 until 57) {
       spots(0)(i) = Wall(Int.MaxValue)
       spots(79)(i) = Wall(Int.MaxValue)
     }
@@ -48,18 +49,20 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
       grid(i)(j) match {
         case Wall(_) =>
           ctx.fillStyle = "rgb(200, 200, 200)"
-          ctx.fillRect(i * 10, j * 10, 10, 10)
+          ctx.fillRect(i * 10, j * 10 + 30, 10, 10)
         case Apple(_, x) =>
           ctx.fillStyle = x match {
             case 2 => "rgb(255, 0, 0)"
             case 5 => "rgb(255, 255, 0)"
           }
-          ctx.fillCircle(i * 10 + 5, j * 10 + 5, 5)
+          ctx.fillCircle(i * 10 + 5, j * 10 + 35, 5)
 
         case Empty =>
       }
 
     }
+    ctx.font = "14pt Arial"
+    ctx.fillText(s"Score: ${score}", 50, 20)
   }
   def update(keys: Set[Int]) = {
     frameCount += 1
@@ -67,7 +70,7 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
     if (frameCount % 2 == 0) {
 
       if (math.random > 0.9 + appleCount / 10.0) {
-        val (x, y) = (Random.nextInt(80), Random.nextInt(60))
+        val (x, y) = (Random.nextInt(80), Random.nextInt(56))
         grid(x)(y) match {
           case Empty =>
             val score = if (Random.nextInt(20) == 0) 5 else 2
@@ -80,10 +83,20 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
       grid(position.x.toInt)(position.y.toInt) match {
         case Wall(d) =>
           result = Some("You hit a wall!")
+          finalScore = Some(score)
           resetGame()
         case x =>
           x match {
-            case Apple(_, s) => length += s
+            case Apple(_, s) =>
+              /*
+              * Instead of using red apple and bonus apple default score (2pts and 5pts):
+              * - Red apple: +1 score (from 2 / 2 = 1)
+              * - Bonus apple: +2 score (from 5 / 2 = 2)
+              *
+              * This is for a better understanding for the user about the values of the apples
+              */
+              score += s / 2
+              length += s
             case _ =>
           }
           grid(position.x.toInt)(position.y.toInt) = Wall(length)

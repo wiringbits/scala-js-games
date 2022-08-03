@@ -6,6 +6,7 @@ import scala.scalajs.js
 
 abstract class Game {
   var result: Option[String] = None
+  var finalScore: Option[Int] = None
   def update(keys: Set[Int]): Unit
 
   def draw(ctx: dom.CanvasRenderingContext2D): Unit
