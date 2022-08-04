@@ -16,6 +16,7 @@ case class Asteroids(bounds: Point, resetGame: () => Unit) extends Game {
   var bullets = Seq.empty[Bullet]
   val craft = new Craft(bounds / 2, Point(0, 0), 0)
   var frameCount = 0
+  var score = 0
   var asteroids = Seq.fill(10)(
     new Asteroid(
       3,
@@ -44,6 +45,7 @@ case class Asteroids(bounds: Point, resetGame: () => Unit) extends Game {
       a <- asteroids
       if a.contains(b.position)
     } yield {
+      score += 1
       val newAsteroids =
         if (a.level == 1) Nil
         else {
@@ -60,6 +62,7 @@ case class Asteroids(bounds: Point, resetGame: () => Unit) extends Game {
 
     if (asteroids.exists(_.contains(craft.position))) {
       result = Some("Your ship hit an asteroid!")
+      finalScore = Some(score)
       resetGame()
     } else if (asteroids.length == 0) {
       result = Some("You successfully destroyed every asteroid!")
@@ -77,6 +80,14 @@ case class Asteroids(bounds: Point, resetGame: () => Unit) extends Game {
     asteroids.foreach(_.draw(ctx))
     bullets.foreach(_.draw(ctx))
     craft.draw(ctx)
+
+    ctx.textAlign = "left"
+    ctx.strokeStyle = Color.Black
+    ctx.font = "16pt Arial"
+    ctx.lineWidth = 5
+    ctx.strokeText(s"Score: ${score}", 10, 25)
+    ctx.fillText(s"Score: ${score}", 10, 25)
+    ctx.lineWidth = 1
   }
 
   class Asteroid(val level: Int, var position: Point, val momentum: Point) {
