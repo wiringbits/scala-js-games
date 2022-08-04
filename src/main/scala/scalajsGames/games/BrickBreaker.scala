@@ -12,6 +12,7 @@ case class BrickBreaker(bounds: Point, resetGame: () => Unit) extends Game {
 
   val colWidth = bounds.x - borderWidth * 2
   var ballsLeft = 3
+  var score = 0
 
   var ballVel = Point(0, 0)
   var ballPos = Point(0, 0)
@@ -65,6 +66,8 @@ case class BrickBreaker(bounds: Point, resetGame: () => Unit) extends Game {
 
     ctx.textAlign = "left"
     ctx.fillText("Balls Left: " + ballsLeft, bounds.x - borderWidth / 2 - 40, 4 * bounds.y / 5 - 10)
+    ctx.fillText(s"Score: ${score}", bounds.x - borderWidth / 2 - 40, 150)
+
     for (i <- 1 to ballsLeft) {
       ctx.fillCircle(bounds.x - borderWidth / 2 - 40 + i * 15, 4 * bounds.y / 5 + 10, 5)
     }
@@ -110,6 +113,7 @@ case class BrickBreaker(bounds: Point, resetGame: () => Unit) extends Game {
         if (ballsLeft >= 0) reset()
         else {
           result = Some("You've run out of balls!")
+          finalScore = Some(score)
           resetGame()
         }
       } else {
@@ -139,6 +143,7 @@ case class BrickBreaker(bounds: Point, resetGame: () => Unit) extends Game {
             if (!hit && extent > 0 && extent < (p2 - p1).length && perpDist < 5) {
               ballVel = func(ballVel)
               bricks.remove(brick)
+              score += 1
               hit = true
             }
           }
@@ -148,6 +153,7 @@ case class BrickBreaker(bounds: Point, resetGame: () => Unit) extends Game {
               val impulse = delta * (ballVel * delta) / delta.lengthSquared
               ballVel = ballVel - impulse * 2
               bricks.remove(brick)
+              score += 1
               hit = true
             }
           }
