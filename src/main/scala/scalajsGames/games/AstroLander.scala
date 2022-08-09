@@ -116,26 +116,26 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
 
     craftVel += Point(0, 0.2)
     craftPos += craftVel
-    
+    var shipLost = false
     val hit = points.flatMap{ p =>
       val prevIndex = points.lastIndexWhere(_.x < craftPos.x)
       
-      if (craftPos.x < 5) craftPos = Point(6, craftPos.y)
-      else if (craftPos.x > 795) craftPos = Point(790, craftPos.y)
-      else if (craftPos.y <= 15) craftPos = Point(craftPos.x, 18)
+      if (craftPos.x < 3 || craftPos.x > 805 || craftPos.y < -50 ) {
+        shipLost = true
+      }
       
       if (prevIndex == -1 || prevIndex == 21) None
       else{
         val prev = points(prevIndex)
         val next = points(prevIndex + 1)
         val height = (craftPos.x - prev.x) / (next.x - prev.x) * (next.y - prev.y) + prev.y
-        if (height > craftPos.y) None
+        if (height > craftPos.y && !shipLost) None
         else Some{
           val groundGradient = math.abs((next.y - prev.y) / (next.x - prev.x))
           val landingSkew = math.abs(craftVel.x / craftVel.y)
           
-    
-          if (groundGradient > 0.1) Failure("landing area too steep")
+          if (shipLost) ExtraFailure("You have lost in the space")
+          else if (groundGradient > 0.1) Failure("landing area too steep")
           else if (landingSkew > 1) Failure("too much horiontal velocity")
           else if(craftVel.length > 3) Failure("coming in too fast")
           else Success
@@ -150,6 +150,9 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
       case Failure(reason) =>
         result = Some("You have crashed your lander: " + reason)
         resetGame()
+      case ExtraFailure(reason) => 
+        result = Some("You died " + reason)
+        resetGame()
     }
   }
 }
@@ -157,3 +160,4 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
 trait Collide
 case object Success extends Collide
 case class Failure(reason: String) extends Collide
+case class ExtraFailure(reason: String) extends Collide
