@@ -108,6 +108,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
 
   }
 
+
   var lastKeys: Set[Int] = Set()
 
   def update(keys: Set[Int]) = {
@@ -123,24 +124,31 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
     craftVel += Point(0, 0.2)
     craftPos += craftVel
 
-    val shipLost = craftPos.x < 0 || craftPos.x >= bounds.x || craftPos.y <= 1 || craftPos.y >= bounds.y
     val hit = points.flatMap { p =>
       val prevIndex = points.lastIndexWhere(_.x < craftPos.x)
 
+      if (craftPos.x <= 2) // Checking if he ship tried to go out from the left
+        craftPos = Point(3, craftPos.y)
+        craftVel = Point(0, 0)
+      else if (craftPos.x > (bounds.x - 2)) // The ship tried to go out from the right
+        craftPos = Point(bounds.x - 3, craftPos.y)
+        craftVel = Point(0, 0)
+      else if (craftPos.y <= 3) // The ship tried to go out from above
+        craftPos = Point(craftPos.x, 4)
+        craftVel = Point(0, 0)
 
-      if (prevIndex == 21) None
+      if (prevIndex == -1 || prevIndex == 21) None
       else {
-        val prev = points(if prevIndex == -1 then prevIndex + 1 else prevIndex)
+        val prev = points(prevIndex)
         val next = points(prevIndex + 1)
         val height = (craftPos.x - prev.x) / (next.x - prev.x) * (next.y - prev.y) + prev.y
-        if (height > craftPos.y && !shipLost) None
+        if (height > craftPos.y) None
         else Some {
           val groundGradient = math.abs((next.y - prev.y) / (next.x - prev.x))
           val landingSkew = math.abs(craftVel.x / craftVel.y)
 
 
-          if (shipLost) ExtraFailure("You have lost in the space")
-          else if (groundGradient > 0.1) Failure("landing area too steep")
+          if (groundGradient > 0.1) Failure("landing area too steep")
           else if (landingSkew > 1) Failure("too much horiontal velocity")
           else if (craftVel.length > 3) Failure("coming in too fast")
           else Success
@@ -156,9 +164,6 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
       case Failure(reason) =>
         result = Some("You have crashed your lander: " + reason)
         resetGame()
-      case ExtraFailure(reason) =>
-        result = Some("You died: " + reason)
-        resetGame()
     }
   }
 }
@@ -169,4 +174,3 @@ case object Success extends Collide
 
 case class Failure(reason: String) extends Collide
 
-case class ExtraFailure(reason: String) extends Collide
