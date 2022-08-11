@@ -30,5 +30,12 @@ jobs:
         #- name: Run tests
         #  run: CI=true sbt test
 
-        #- name: Prepare production build
-        #run: npm install && npm run build
+      - name: Install js dependencies
+        run: npm ci
+
+      - name: Scala to js
+        run: sbt fullLinkJS && sbt fullLinkOutputDir
+
+      - name: Prepare production build
+        run: npm run build
+
