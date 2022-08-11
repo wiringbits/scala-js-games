@@ -13,7 +13,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
       var x = 0
       while
         x = Random.nextInt(21)
-        x == flat
+      x == flat
       do ()
 
       x
@@ -22,7 +22,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
       var x = 0
       while
         x = Random.nextInt(21)
-        x == flat || x == cliff1
+      x == flat || x == cliff1
       do ()
 
       x
@@ -127,7 +127,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
     val hit = points.flatMap { p =>
       val prevIndex = points.lastIndexWhere(_.x < craftPos.x)
 
-      if (craftPos.x <= 2) // Checking if he ship tried to go out from the left
+      if (craftPos.x <= 2) // Checking if the ship tried to go out from the left
         craftPos = Point(3, craftPos.y)
         craftVel = Point(0, 0)
       else if (craftPos.x > (bounds.x - 2)) // The ship tried to go out from the right
