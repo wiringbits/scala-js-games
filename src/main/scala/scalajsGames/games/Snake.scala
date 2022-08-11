@@ -89,12 +89,12 @@ case class Snake(bounds: Point, resetGame: () => Unit) extends Game {
           x match {
             case Apple(_, s) =>
               /*
-              * Instead of using red apple and bonus apple default score (2pts and 5pts):
-              * - Red apple: +1 score (from 2 / 2 = 1)
-              * - Bonus apple: +2 score (from 5 / 2 = 2)
-              *
-              * This is for a better understanding for the user about the values of the apples
-              */
+               * Instead of using red apple and bonus apple default score (2pts and 5pts):
+               * - Red apple: +1 score (from 2 / 2 = 1)
+               * - Bonus apple: +2 score (from 5 / 2 = 2)
+               *
+               * This is for a better understanding for the user about the values of the apples
+               */
               score += s / 2
               length += s
             case _ =>

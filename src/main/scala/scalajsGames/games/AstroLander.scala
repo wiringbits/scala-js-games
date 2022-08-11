@@ -4,7 +4,7 @@ package games
 import org.scalajs.dom
 import scala.util.Random
 
-case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
+case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
   val points = {
     var current = 450
     var pts = List.empty[Point]
@@ -28,10 +28,10 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
       x
     }
 
-    (0 to 21).foreach{n =>
-      if (n == flat+1) current = current
-      else if (n == cliff1+1) current = current - Random.nextInt(25) - 150
-      else if (n == cliff2+2) current = current - Random.nextInt(25) + 150
+    (0 to 21).foreach { n =>
+      if (n == flat + 1) current = current
+      else if (n == cliff1 + 1) current = current - Random.nextInt(25) - 150
+      else if (n == cliff2 + 2) current = current - Random.nextInt(25) + 150
       else current = current - Random.nextInt(50) + 25
 
       if (current > bounds.y) current = (2 * bounds.y - current).toInt
@@ -49,14 +49,13 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
 
   def shipPoints = Seq(
     craftPos + Point(15, 0).rotate(theta),
-    craftPos + Point(7, 0).rotate(theta + 127.5/180 * Math.PI),
-    craftPos + Point(7, 0).rotate(theta - 127.5/180 * Math.PI)
+    craftPos + Point(7, 0).rotate(theta + 127.5 / 180 * Math.PI),
+    craftPos + Point(7, 0).rotate(theta - 127.5 / 180 * Math.PI)
   )
   def draw(ctx: dom.CanvasRenderingContext2D) = {
     ctx.textAlign = "left"
     ctx.fillStyle = Color.Black
     ctx.fillRect(0, 0, bounds.x, bounds.y)
-
 
     ctx.fillStyle = if (craftVel.length < 3) Color.Green else Color.White
     ctx.fillText("Speed: " + (craftVel.length * 10).toInt.toDouble / 10, 20, 50)
@@ -69,7 +68,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
 
     ctx.beginPath()
     ctx.moveTo(0, bounds.y)
-    for(p <- points) ctx.lineTo(p.x, p.y)
+    for (p <- points) ctx.lineTo(p.x, p.y)
     ctx.lineTo(bounds.x, bounds.y)
     ctx.fill()
 
@@ -87,7 +86,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
           p + Point(a, a).rotate(angle - offset),
           p + Point(b, b).rotate(angle - offset + width),
           p + Point(c, c).rotate(angle - offset),
-          p + Point(b, b).rotate(angle - offset  - width),
+          p + Point(b, b).rotate(angle - offset - width),
           p + Point(a, a).rotate(angle - offset)
         )
       }
@@ -96,7 +95,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
     }
 
     ctx.strokeStyle = Color.Red
-    if (fuel > 0){
+    if (fuel > 0) {
       if (lastKeys(37)) drawFlame(craftPos, theta + math.Pi / 4)
       if (lastKeys(39)) drawFlame(craftPos, theta - math.Pi / 4)
       if (lastKeys(40)) drawFlame(craftPos, theta)
@@ -106,7 +105,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
   var lastKeys: Set[Int] = Set()
   def update(keys: Set[Int]) = {
     lastKeys = keys
-    if (fuel > 0){
+    if (fuel > 0) {
       if (keys(37)) craftVel += Point(0.5, 0).rotate(theta + math.Pi / 4)
       if (keys(39)) craftVel += Point(0.5, 0).rotate(theta - math.Pi / 4)
       if (keys(40)) craftVel += Point(0.5, 0).rotate(theta)
@@ -116,29 +115,28 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game{
     craftVel += Point(0, 0.2)
     craftPos += craftVel
 
-
-
-    val hit = points.flatMap{ p =>
+    val hit = points.flatMap { p =>
       val prevIndex = points.lastIndexWhere(_.x < craftPos.x)
       if (prevIndex == -1 || prevIndex == 21) None
-      else{
+      else {
         val prev = points(prevIndex)
         val next = points(prevIndex + 1)
         val height = (craftPos.x - prev.x) / (next.x - prev.x) * (next.y - prev.y) + prev.y
         if (height > craftPos.y) None
-        else Some{
-          val groundGradient = math.abs((next.y - prev.y) / (next.x - prev.x))
-          val  landingSkew = math.abs(craftVel.x / craftVel.y)
+        else
+          Some {
+            val groundGradient = math.abs((next.y - prev.y) / (next.x - prev.x))
+            val landingSkew = math.abs(craftVel.x / craftVel.y)
 
-          if (groundGradient > 0.1) Failure("landing area too steep")
-          else if (landingSkew > 1) Failure("too much horiontal velocity")
-          else if(craftVel.length > 3) Failure("coming in too fast")
-          else Success
-        }
+            if (groundGradient > 0.1) Failure("landing area too steep")
+            else if (landingSkew > 1) Failure("too much horiontal velocity")
+            else if (craftVel.length > 3) Failure("coming in too fast")
+            else Success
+          }
       }
     }
 
-    hit.headOption.map{
+    hit.headOption.map {
       case Success =>
         result = Some("You have landed successfully.")
         resetGame()

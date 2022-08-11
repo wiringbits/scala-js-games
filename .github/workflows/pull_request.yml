@@ -21,8 +21,8 @@ jobs:
           java-version: 'adopt:1.11.0-11'
           node-version: '16.7.0'
 
-          #      - name: Check code format
-          # run: sbt scalafmtCheckAll
+      - name: Check code format
+        run: sbt scalafmtCheckAll
 
       - name: Compile
         run: CI=true sbt compile
