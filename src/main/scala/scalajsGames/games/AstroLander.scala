@@ -7,7 +7,6 @@ import org.scalajs.dom
 import scala.util.Random
 
 case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
-  var timePlayig = 0;
   val points = {
     var current = 450
     var pts = List.empty[Point]
