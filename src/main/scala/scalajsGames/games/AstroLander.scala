@@ -65,7 +65,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
 
 
     ctx.strokeStyle = Color.Green
-    ctx.strokeRect(20, 60, math.max(1, fuel) * 65 / 600, 15)
+    ctx.strokeRect(20, 60, math.max(1, fuel) * 65 / 500, 15)
     ctx.fillStyle = Color.White
     ctx.strokeStyle = Color.White
     ctx.strokeRect(20, 60, 65, 15)
@@ -116,7 +116,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
   def update(keys: Set[Int]) = {
     lastKeys = keys
     if (fuel > 0) {
-      // I changed the first parameter of Point of 0.5 to 0.1, thats makes the ship slowest
+      // This handles the ship speed, smaller values lead to slower speeds
       if (keys(37)) craftVel += Point(0.1, 0).rotate(theta + math.Pi / 4)
       if (keys(39)) craftVel += Point(0.1, 0).rotate(theta - math.Pi / 4)
       if (keys(40)) craftVel += Point(0.4, 0).rotate(theta)
@@ -148,7 +148,6 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
         else Some {
           val groundGradient = math.abs((next.y - prev.y) / (next.x - prev.x))
           val landingSkew = math.abs(craftVel.x / craftVel.y)
-
 
           if (groundGradient > 0.1) Failure("landing area too steep")
           else if (landingSkew > 1) Failure("too much horiontal velocity")
