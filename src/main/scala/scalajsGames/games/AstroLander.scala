@@ -63,7 +63,6 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
     ctx.fillStyle = if (craftVel.length < 3) Color.Green else Color.White
     ctx.fillText("Speed: " + (craftVel.length * 10).toInt.toDouble / 10, 20, 50)
 
-
     ctx.strokeStyle = Color.Green
     ctx.strokeRect(20, 60, math.max(1, fuel) * 65 / 500, 15)
     ctx.fillStyle = Color.White
@@ -110,7 +109,6 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
 
   }
 
-
   var lastKeys: Set[Int] = Set()
 
   def update(keys: Set[Int]) = {
@@ -145,18 +143,18 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
         val next = points(prevIndex + 1)
         val height = (craftPos.x - prev.x) / (next.x - prev.x) * (next.y - prev.y) + prev.y
         if (height > craftPos.y) None
-        else Some {
-          val groundGradient = math.abs((next.y - prev.y) / (next.x - prev.x))
-          val landingSkew = math.abs(craftVel.x / craftVel.y)
+        else
+          Some {
+            val groundGradient = math.abs((next.y - prev.y) / (next.x - prev.x))
+            val landingSkew = math.abs(craftVel.x / craftVel.y)
 
-          if (groundGradient > 0.1) Failure("landing area too steep")
-          else if (landingSkew > 1) Failure("too much horiontal velocity")
-          else if (craftVel.length > 3) Failure("coming in too fast")
-          else Success
-        }
+            if (groundGradient > 0.1) Failure("landing area too steep")
+            else if (landingSkew > 1) Failure("too much horiontal velocity")
+            else if (craftVel.length > 3) Failure("coming in too fast")
+            else Success
+          }
       }
     }
-
 
     hit.headOption.map {
       case Success =>
@@ -174,4 +172,3 @@ trait Collide
 case object Success extends Collide
 
 case class Failure(reason: String) extends Collide
-
