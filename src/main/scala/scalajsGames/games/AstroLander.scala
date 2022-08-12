@@ -1,10 +1,13 @@
 package scalajsGames
+
 package games
 
 import org.scalajs.dom
+
 import scala.util.Random
 
 case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
+  var timePlayig = 0;
   val points = {
     var current = 450
     var pts = List.empty[Point]
@@ -13,7 +16,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
       var x = 0
       while
         x = Random.nextInt(21)
-      x == flat
+        x == flat
       do ()
 
       x
@@ -22,7 +25,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
       var x = 0
       while
         x = Random.nextInt(21)
-      x == flat || x == cliff1
+        x == flat || x == cliff1
       do ()
 
       x
@@ -62,8 +65,9 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
     ctx.fillStyle = if (craftVel.length < 3) Color.Green else Color.White
     ctx.fillText("Speed: " + (craftVel.length * 10).toInt.toDouble / 10, 20, 50)
 
+
     ctx.strokeStyle = Color.Green
-    ctx.strokeRect(20, 60, math.max(1, fuel) * 65 / 500, 15)
+    ctx.strokeRect(20, 60, math.max(1, fuel) * 65 / 600, 15)
     ctx.fillStyle = Color.White
     ctx.strokeStyle = Color.White
     ctx.strokeRect(20, 60, 65, 15)
