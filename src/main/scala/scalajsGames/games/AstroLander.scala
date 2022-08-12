@@ -60,7 +60,6 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
     ctx.fillStyle = Color.Black
     ctx.fillRect(0, 0, bounds.x, bounds.y)
 
-
     ctx.fillStyle = if (craftVel.length < 3) Color.Green else Color.White
     ctx.fillText("Speed: " + (craftVel.length * 10).toInt.toDouble / 10, 20, 50)
 
