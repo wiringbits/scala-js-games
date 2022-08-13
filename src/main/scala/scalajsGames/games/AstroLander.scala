@@ -7,6 +7,8 @@ import org.scalajs.dom
 import scala.util.Random
 
 case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
+  var updates = 0
+  var timeLapsed = 0
   val points = {
     var current = 450
     var pts = List.empty[Point]
@@ -62,6 +64,11 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
 
     ctx.fillStyle = if (craftVel.length < 3) Color.Green else Color.White
     ctx.fillText("Speed: " + (craftVel.length * 10).toInt.toDouble / 10, 20, 50)
+
+    ctx.fillStyle = Color.White
+    updates += 1
+    if (updates % 66 == 0) timeLapsed += 1
+    ctx.fillText(s"Time Lapsed: ${timeLapsed}s", 650, 50)
 
     ctx.strokeStyle = Color.Green
     ctx.strokeRect(20, 60, math.max(1, fuel) * 65 / 500, 15)
