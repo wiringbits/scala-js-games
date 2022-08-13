@@ -1,7 +1,9 @@
 package scalajsGames
+
 package games
 
 import org.scalajs.dom
+
 import scala.util.Random
 
 case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
@@ -52,6 +54,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
     craftPos + Point(7, 0).rotate(theta + 127.5 / 180 * Math.PI),
     craftPos + Point(7, 0).rotate(theta - 127.5 / 180 * Math.PI)
   )
+
   def draw(ctx: dom.CanvasRenderingContext2D) = {
     ctx.textAlign = "left"
     ctx.fillStyle = Color.Black
@@ -77,8 +80,10 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
     ctx.moveTo(shipPoints.last.x, shipPoints.last.y)
     shipPoints.map(p => ctx.lineTo(p.x, p.y))
     ctx.fill()
+
     def drawFlame(p: Point, angle: Double) = {
       val offset = math.Pi * 1.25
+
       def diamond(a: Int, b: Int, c: Int, w: Int) = {
         val width = w * math.Pi / 180
 
@@ -90,6 +95,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
           p + Point(a, a).rotate(angle - offset)
         )
       }
+
       diamond(5, 15, 25, 15)
       diamond(10, 15, 20, 10)
     }
@@ -102,13 +108,16 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
     }
 
   }
+
   var lastKeys: Set[Int] = Set()
+
   def update(keys: Set[Int]) = {
     lastKeys = keys
     if (fuel > 0) {
-      if (keys(37)) craftVel += Point(0.5, 0).rotate(theta + math.Pi / 4)
-      if (keys(39)) craftVel += Point(0.5, 0).rotate(theta - math.Pi / 4)
-      if (keys(40)) craftVel += Point(0.5, 0).rotate(theta)
+      // This handles the ship speed, smaller values lead to slower speeds
+      if (keys(37)) craftVel += Point(0.1, 0).rotate(theta + math.Pi / 4)
+      if (keys(39)) craftVel += Point(0.1, 0).rotate(theta - math.Pi / 4)
+      if (keys(40)) craftVel += Point(0.4, 0).rotate(theta)
       fuel -= Seq(keys(37), keys(39), keys(40)).count(x => x)
     }
 
@@ -117,6 +126,17 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
 
     val hit = points.flatMap { p =>
       val prevIndex = points.lastIndexWhere(_.x < craftPos.x)
+
+      if (craftPos.x <= 2) // Checking if the ship tried to go out from the left
+        craftPos = Point(3, craftPos.y)
+        craftVel = Point(0, 0)
+      else if (craftPos.x > (bounds.x - 2)) // The ship tried to go out from the right
+        craftPos = Point(bounds.x - 3, craftPos.y)
+        craftVel = Point(0, 0)
+      else if (craftPos.y <= 3) // The ship tried to go out from above
+        craftPos = Point(craftPos.x, 4)
+        craftVel = Point(0, 0)
+
       if (prevIndex == -1 || prevIndex == 21) None
       else {
         val prev = points(prevIndex)
@@ -148,5 +168,7 @@ case class AstroLander(bounds: Point, resetGame: () => Unit) extends Game {
 }
 
 trait Collide
+
 case object Success extends Collide
+
 case class Failure(reason: String) extends Collide
