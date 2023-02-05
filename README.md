@@ -30,3 +30,10 @@ The games are, in order:
 - Run `npm install` to install the js dependencies.
 - Run `npm run dev` to launch the dev server, then, open `http://localhost:3000` to load the app.
 - Run `npm run build` to prepare the production build.
+
+## Scala.js bundle size
+
+The bundle size is ~600kb, ~100kb compressed:
+
+![sjs-games-code-size](./docs/images/sjs-games-code-size.png)
+
